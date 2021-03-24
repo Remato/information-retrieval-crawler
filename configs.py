@@ -5,47 +5,55 @@ agent = {
 heuristic = [
   {
     'key': 'jogador',
-    'weight': 0.9
+    'weight': 9
   },
   {
     'key': 'player',
-    'weight': 0.8
+    'weight': 8
   },
   {
     'key': 'futebol',
-    'weight': 0.7
+    'weight': 7
+  },
+  {
+    'key': 'status',
+    'weight': 6
+  },
+  {
+    'key': 'stats',
+    'weight': 6
   },
   {
     'key': 'soccer',
-    'weight': 0.6
+    'weight': 6
   },
   {
     'key': 'football',
-    'weight': 0.5
+    'weight': 5
   }, 
   {
     'key': 'perfil',
-    'weight': 0.5
+    'weight': 5
   },
   {
     'key': 'profile',
-    'weight': 0.4
+    'weight': 4
   },
   {
     'key': 'people',
-    'weight': 0.3
-  },
+    'weight': 3
+  }
 ]
 
 links = [
-    'https://globalsportsarchive.com',
-    'https://www.playmakerstats.com',
-    'https://fbref.com',
-    'https://br.soccerway.com',
-    'https://www.goal.com/br',
-    'https://www.ogol.com.br',
-    'https://www.transfermarkt.com.br',
-    'https://www.sambafoot.com/br',
-    'https://www.foxsports.com',
-    'https://www.espn.com.br'
+  'https://globalsportsarchive.com',
+  'https://www.playmakerstats.com',
+  'https://fbref.com',
+  'https://br.soccerway.com',
+  'https://www.goal.com/br',
+  'https://www.ogol.com.br',
+  'https://www.transfermarkt.com.br',
+  'https://www.sambafoot.com/br',
+  'https://www.foxsports.com',
+  'https://www.espn.com.br'
 ]
