@@ -42,7 +42,40 @@ heuristic = [
   {
     'key': 'people',
     'weight': 3
-  }
+  },
+  {
+    'key': 'basketball',
+    'weight': -4
+  },
+  {
+    'key': 'volleyball',
+    'weight': -4
+  },
+  {
+    'key': 'cricket',
+    'weight': -4
+  },
+  {
+    'key': 'rugby',
+    'weight': -4
+  },
+  {
+    'key': 'handball',
+    'weight': -4
+  },
+  {
+    'key': 'floorball',
+    'weight': -4
+  },
+  {
+    'key': 'water',
+    'weight': -4
+  },
+  {
+    'key': 'handball',
+    'weight': -4
+  },
+  
 ]
 
 links = [
