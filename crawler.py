@@ -5,7 +5,7 @@ import requests
 import configs
 import re
 
-MAX_PAGES = 500
+MAX_PAGES = 600
 
 crawledPages = 0
 relevantPages = 0
@@ -85,30 +85,48 @@ def Crawler(seedLink):
         crawlerOutput[seedLink]['harvest_ratio'] = relevantLinks/visitedLinks
 
 # Crawler Thread Init.
-for link in frontier:
-  crawlerOutput[link] = {
-    'visited_links': 0,
-    'relevant_links': 0,
-    'harvest_ratio': 0,
-    'frontier': set(),
-    'thread': Thread(target=Crawler, args=[link])._name
-  }
-  threads.append(Thread(target=Crawler, args=[link]))
+def crawlerInit():
+  for link in frontier:
+    crawlerOutput[link] = {
+      'visited_links': 0,
+      'relevant_links': 0,
+      'harvest_ratio': 0,
+      'frontier': set(),
+      'thread': Thread(target=Crawler, args=[link])._name
+    }
+    threads.append(Thread(target=Crawler, args=[link]))
 
-frontier.clear()
+  frontier.clear()
 
-for t in threads:
-  t.start()
+  for t in threads:
+    t.start()
 
-for t in threads:
-  t.join()
+  for t in threads:
+    t.join()
 
-# verificando se tem os dados necessários para realizar uma nova busca
+# iniciando o crawler
+crawlerInit()
+
+
+totalLinks = []
+
+# analisando os dados coletados
 for c in crawlerOutput:
   crawledPages += crawlerOutput[c]['visited_links']
   relevantPages += crawlerOutput[c]['relevant_links']
   sortedFrontier = sorted(crawlerOutput[c]['frontier'], key=lambda k: k['weight'], reverse=True)
   crawlerOutput[c]['frontier'] = sortedFrontier
+  totalLinks += sortedFrontier
+
+
+#reinicia a busca
+if crawledPages < MAX_PAGES:
+  sortTotal = sorted(totalLinks, key=lambda k: k['weight'], reverse=True)
+  for i in range(10):
+    frontier.append(sortTotal[i])
+
+  crawlerInit()
+  
 
 print("total_harvest_ratio = "+ str(relevantPages/crawledPages))
 print("crawledLinks = "+ str(crawlerOutput))
