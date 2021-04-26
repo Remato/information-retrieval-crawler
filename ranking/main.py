@@ -124,6 +124,10 @@ def spearman(r1, r2):
   s = 0
   k = len(r1)
 
+  # 100% porém não tem nenhuma pesquisa
+  if k == 0:
+    return 1.0
+
   for i in range(len(r1)):
     sub = r1[i]['score'] - r2[i]['score']
     s = s + math.pow(sub, 2)
