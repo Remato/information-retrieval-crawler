@@ -106,14 +106,10 @@ def get_size(obj, seen=None):
         size += sum([get_size(i, seen) for i in obj])
     return size
 
-# if __name__ == '__main__':
-#     docs = []
-#     for item in get_items():
-#         docs.append(item['pagina'])
-#     print(docs)
-#     docs = process_text_in_pages(docs)
-#     inverted_index = get_inverted_index(docs, 'normal')
-#     inverted_index_compressed = get_inverted_index(docs, 'compress')
-#     size_normal = get_size(inverted_index)
-#     size_compressed = get_size(inverted_index_compressed)
-#     print(inverted_index - inverted_index_compressed)
+
+def process():
+    docs = []
+    for item in get_items():
+        docs.append(item['pagina'])
+    docs = process_text_in_pages(docs)
+    return get_inverted_index(docs, 'normal')
