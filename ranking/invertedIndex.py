@@ -112,4 +112,5 @@ def process():
     for item in get_items():
         docs.append(item['pagina'])
     docs = process_text_in_pages(docs)
+    
     return get_inverted_index(docs, 'normal')
