@@ -1,9 +1,10 @@
-import invertedIndex
-import documents
-
 import math
-from threading import Thread
-n_docs = len(documents.docs)
+import json
+import invertedIndex
+
+# colocar o novo valor de docs
+inverted = invertedIndex.process()
+n_docs = 20
 
 # calculo de similaridade usando coseno | qual o documento que mais se adapta à query?
 # Doc_1 = (0.5, 0.8, 0.3), Doc_2 = (0.9, 0.4, 0.2) Query = (1.5, 1.0, 0)
@@ -25,8 +26,8 @@ def idf_query(query):
   idfs = []
 
   for term in terms:
-    if term in invertedIndex.indexes:
-      occurrencies = len(invertedIndex.indexes[term])    
+    if term in inverted:
+      occurrencies = len(inverted[term])    
       idfs.append((1 + math.log(n_docs/occurrencies)))
     else:
       idfs.append(0.0)
@@ -34,14 +35,18 @@ def idf_query(query):
   return idfs
 
 def tf_idf(term, doc):
-  tf = doc['body'].count(term)
+  tf = 0.0
 
-  if term in invertedIndex.indexes:
-    occurrencies = invertedIndex.indexes[term]
+  if term in inverted:
+    occurrencies = len(inverted[term])
+  
+    for i in range(occurrencies):
+      if inverted[term][i][0] == doc:
+        tf = inverted[term][i][1]
   else:
     return 0.0
 
-  idf = math.log(1 + n_docs/len(occurrencies))
+  idf = math.log(1 + n_docs/occurrencies)
 
   return tf*idf
   
@@ -50,9 +55,9 @@ def rank(query):
   docs = []
 
   for term in terms:
-    if term in invertedIndex.indexes:
-      for d in invertedIndex.indexes[term]:
-        docs.append(d)
+    if term in inverted:
+      for d in inverted[term]:
+        docs.append(d[0])
   
   # rank only tf
   newbie_rank = {}
@@ -77,8 +82,7 @@ def rank(query):
   for doc in docs:
     score = []
     for term in terms:
-      if doc in documents.docs:
-        score.append(tf_idf(term, documents.docs[doc]))
+      score.append(tf_idf(term, doc))
     # aqui temos os tf-idf para cada doc
     scores.append(score)
     
@@ -89,6 +93,7 @@ def rank(query):
 
 def cos_similar(query, scores, docs):
   query_scores = idf_query(query)
+
   doc_scores = []
   
   for i in range(len(docs)):
@@ -124,31 +129,36 @@ def spearman(r1, r2):
     s = s + math.pow(sub, 2)
   
   spearman = 1 - ((6*s)/(k*(math.pow(k,2) - 1)))
-
+  
   return spearman
 
 
 while(1):
+  
+
   print('Digite uma nova consulta:')
   query = input()
 
   if query != '':
     newbie_rank, optimized_rank = rank(query)
 
-    print('Páginas encontradas:')
+    with open("../data/wrapped.json", "r") as outfile:
+      documents = json.loads(outfile.read())
+
+    print(documents[0]['link'])
 
     print('[ Rankeamento sem tf-idf ]')
     for n in newbie_rank:
-      print(documents.docs[n['doc']]['link'])
+      print(documents[n['doc']-1]["link"])
     
     print('----------------------------')
 
     print('[ Rankeamento com tf-idf ]')
     for o in optimized_rank:
-      print(documents.docs[o['doc']]['link'])
+      print(documents[o['doc']-1]["link"])
 
     print('----------------------------')
-    
+
     # correlation spearman
     correlation = spearman(newbie_rank, optimized_rank)
     print('O fator de correlação entre essas 2 pesquisa foi de: '+ str(correlation))
