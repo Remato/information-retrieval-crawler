@@ -11,6 +11,7 @@ count_vect = CountVectorizer(analyzer="word",
                              preprocessor=None,
                              stop_words=None)
 
+
 def process_text(text):
     text = re.sub(r'\W+', ' ', text)
     text = text.lower()
@@ -83,6 +84,7 @@ def get_bytes(value):
         x = x + 7
     return bytearray([value >> x]) + get_bytes(value - ((value >> x) << x))
 
+
 # https://goshippo.com/blog/measure-real-size-any-python-object/
 def get_size(obj, seen=None):
     """Recursively finds size of objects"""
@@ -103,7 +105,6 @@ def get_size(obj, seen=None):
     elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
         size += sum([get_size(i, seen) for i in obj])
     return size
-
 
 # if __name__ == '__main__':
 #     docs = []
