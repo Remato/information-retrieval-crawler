@@ -53,8 +53,25 @@ def rank(query):
     if term in invertedIndex.indexes:
       for d in invertedIndex.indexes[term]:
         docs.append(d)
+  
+  # rank only tf
+  newbie_rank = {}
+  for d in docs:
+    newbie_rank[d] = float(docs.count(d))
 
-    docs = list(set(docs))
+  # parse
+  parsed_newbie = []
+  for r in newbie_rank:
+    parsed_newbie.append({
+      'doc': r,
+      'score': newbie_rank[r]
+    })
+
+  parsed_newbie = sorted(parsed_newbie, key=lambda k: k['score'], reverse=True)
+
+  # rank with tf-idf
+  docs = list(set(docs))
+
   # method document-at-a-time
   scores = []
   for doc in docs:
@@ -68,34 +85,76 @@ def rank(query):
     # usar a similaridade de cosenos para finalizar rankeamento
   rank = cos_similar(query, scores, docs)
 
-  return rank
+  return parsed_newbie, rank
 
 def cos_similar(query, scores, docs):
   query_scores = idf_query(query)
   doc_scores = []
   
   for i in range(len(docs)):
-    s = 0
-    d = 0
-    q = 0
+    s = 0.0
+    d = 0.0
+    q = 0.0
     for j in range(len(scores[0])):
         s = s + scores[i][j]*query_scores[j]
         d = d + math.pow(scores[i][j], 2)
         q = q + math.pow(query_scores[j], 2)
 
-    doc_scores.append({
-      'doc': docs[i],
-      'score': s/math.sqrt(d*q)
-    })
+    if d > 0 and q > 0:
+      doc_scores.append({
+        'doc': docs[i],
+        'score': s/math.sqrt(d*q)
+      })
+    else:
+      doc_scores.append({
+        'doc': docs[i],
+        'score': 0.0
+      })
 
-  doc_scores = sorted(doc_scores, key=lambda k: k['score'])
+  doc_scores = sorted(doc_scores, key=lambda k: k['score'], reverse=True)
 
   return doc_scores
 
+def spearman(r1, r2):
+  s = 0
+  k = len(r1)
+
+  for i in range(len(r1)):
+    sub = r1[i]['score'] - r2[i]['score']
+    s = s + math.pow(sub, 2)
+  
+  spearman = 1 - ((6*s)/(k*(math.pow(k,2) - 1)))
+
+  return spearman
+
+
+while(1):
+  print('Digite uma nova consulta:')
+  query = input()
+
+  if query != '':
+    newbie_rank, optimized_rank = rank(query)
+
+    print('Páginas encontradas:')
+
+    print('[ Rankeamento sem tf-idf ]')
+    for n in newbie_rank:
+      print(documents.docs[n['doc']]['link'])
     
+    print('----------------------------')
 
-print('Digite a sua consulta:')
-query = input()
+    print('[ Rankeamento com tf-idf ]')
+    for o in optimized_rank:
+      print(documents.docs[o['doc']]['link'])
+
+    print('----------------------------')
+    
+    # correlation spearman
+    correlation = spearman(newbie_rank, optimized_rank)
+    print('O fator de correlação entre essas 2 pesquisa foi de: '+ str(correlation))
 
 
-print(rank(query))
+
+
+
+
