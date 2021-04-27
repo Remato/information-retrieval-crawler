@@ -154,14 +154,32 @@ while (1):
             documents = json.loads(outfile.read())
 
         print('[ Rankeamento sem tf-idf ]')
-        for n in newbie_rank:
+        for index, n in enumerate(newbie_rank):
             print(documents[n['doc']]["link"])
+            if index <= 2:
+                print('----------------------------')
+                print('|Nome: ' + documents[n['doc']]['nome'])
+                print('|Altura: ' + documents[n['doc']]['altura'])
+                print('|Peso: ' + documents[n['doc']]['peso'])
+                print('|Nascimento: ' + documents[n['doc']]['data_nascimento'])
+                print('|Gols: ' + documents[n['doc']]['gols'])
+                print('|Assistências: ' + documents[n['doc']]['assistencias'])
+                print('----------------------------')
 
         print('----------------------------')
 
         print('[ Rankeamento com tf-idf ]')
-        for o in optimized_rank:
-            print(documents[o['doc'] - 1]["link"])
+        for index, o in enumerate(optimized_rank):
+            print(documents[o['doc']]["link"])
+            if index <= 2:
+                print('----------------------------')
+                print('|Nome: ' + documents[n['doc']]['nome'])
+                print('|Altura: ' + documents[n['doc']]['altura'])
+                print('|Peso: ' + documents[n['doc']]['peso'])
+                print('|Nascimento: ' + documents[n['doc']]['data_nascimento'])
+                print('|Gols: ' + documents[n['doc']]['gols'])
+                print('|Assistências: ' + documents[n['doc']]['assistencias'])
+                print('----------------------------')
 
         print('----------------------------')
 
