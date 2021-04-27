@@ -3,8 +3,11 @@ import json
 import invertedIndex
 
 # colocar o novo valor de docs
+n_docs = 0
+
 inverted = invertedIndex.process()
-n_docs = 20
+with open("../data/wrapped.json", "r", encoding='utf-8') as outfile:
+    n_docs = len(json.loads(outfile.read()))
 
 
 # calculo de similaridade usando coseno | qual o documento que mais se adapta à query?
@@ -56,16 +59,20 @@ def tf_idf(term, doc):
 def rank(query):
     terms = query.split()
     docs = []
+    # occurrencies = []
 
     for term in terms:
         if term in inverted:
             for d in inverted[term]:
                 docs.append(d[0])
+                # occurrencies.append(d[1])
 
-    # rank only tf
+    # rank sem tf-idf
     newbie_rank = {}
-    for d in docs:
+
+    for index, d in enumerate(docs):
         newbie_rank[d] = float(docs.count(d))
+        # newbie_rank[d] = occurrencies[index]
 
     # parse
     parsed_newbie = []
@@ -77,10 +84,10 @@ def rank(query):
 
     parsed_newbie = sorted(parsed_newbie, key=lambda k: k['score'], reverse=True)
 
-    # rank with tf-idf
+    # rank com tf-idf
     docs = list(set(docs))
 
-    # method document-at-a-time
+    # document-at-a-time
     scores = []
     for doc in docs:
         score = []
@@ -143,7 +150,6 @@ def spearman(r1, r2):
 
 
 while (1):
-
     print('Digite uma nova consulta:')
     query = input()
 
@@ -173,12 +179,12 @@ while (1):
             print(documents[o['doc']]["link"])
             if index <= 2:
                 print('----------------------------')
-                print('|Nome: ' + documents[n['doc']]['nome'])
-                print('|Altura: ' + documents[n['doc']]['altura'])
-                print('|Peso: ' + documents[n['doc']]['peso'])
-                print('|Nascimento: ' + documents[n['doc']]['data_nascimento'])
-                print('|Gols: ' + documents[n['doc']]['gols'])
-                print('|Assistências: ' + documents[n['doc']]['assistencias'])
+                print('|Nome: ' + documents[o['doc']]['nome'])
+                print('|Altura: ' + documents[o['doc']]['altura'])
+                print('|Peso: ' + documents[o['doc']]['peso'])
+                print('|Nascimento: ' + documents[o['doc']]['data_nascimento'])
+                print('|Gols: ' + documents[o['doc']]['gols'])
+                print('|Assistências: ' + documents[o['doc']]['assistencias'])
                 print('----------------------------')
 
         print('----------------------------')
