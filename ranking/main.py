@@ -149,17 +149,15 @@ while(1):
     with open("../data/wrapped.json", "r") as outfile:
       documents = json.loads(outfile.read())
 
-    print(documents[0]['link'])
-
     print('[ Rankeamento sem tf-idf ]')
     for n in newbie_rank:
-      print(documents[n['doc']-1]["link"])
+      print(documents[n['doc']]["link"])
     
     print('----------------------------')
 
     print('[ Rankeamento com tf-idf ]')
     for o in optimized_rank:
-      print(documents[o['doc']-1]["link"])
+      print(documents[o['doc']]["link"])
 
     print('----------------------------')
 
